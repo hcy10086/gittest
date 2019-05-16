@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程</title>
+</head>
+<body>
+
+<div id="div1"><h2>输入城市查询天气</h2></div>
+<input type="text" id="cs" value="zz">
+<button>获取其他内容</button>
+
+</body>
+<div id="main" style="width: 600px;height:400px;"></div>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script src="echarts-gl.js">
+</script>
+
+<script>
+    var myChart = echarts.init(document.getElementById('main'));
+    var xAxisData = [];
+    var data1 = [];
+    var data2 = [];
+    option = {
+        title: {
+            text: '天气预报'
+        },
+        legend: {
+            data: ['最高气温', '最低气温'],
+            align: 'left'
+        },
+        toolbox: {
+            // y: 'bottom',
+            feature: {
+                magicType: {
+                    type: ['stack', 'tiled']
+                },
+                dataView: {},
+                saveAsImage: {
+                    pixelRatio: 2
+                }
+            }
+        },
+        tooltip: {},
+        xAxis: {
+            data: xAxisData,
+            silent: false,
+            splitLine: {
+                show: false
+            }
+        },
+        yAxis: {
+        },
+        series: [{
+            name: '最高气温',
+            type: 'bar',
+            data: data1,
+            animationDelay: function (idx) {
+                return idx * 100;
+            }
+        }, {
+            name: '最低气温',
+            type: 'bar',
+            data: data2,
+            animationDelay: function (idx) {
+                return idx * 100;
+            }
+        }],
+        animationEasing: 'elasticOut',
+        animationDelayUpdate: function (idx) {
+            return idx * 100;
+        }
+    };
+    myChart.setOption(option);
+$(document).ready(function(){
+	$("button").click(function(){
+	    alert($("#cs")[0].value)
+		$.ajax({
+			url:"http://192.168.0.3/weather",
+            type: "post",
+            data:{name:$("#cs")[0].value},
+            dataType:"json",
+			success:function(result){
+			    alert(result[0].date)
+			    $("#div1").html(result);
+		}});
+	});
+});
+</script>
+</html>
